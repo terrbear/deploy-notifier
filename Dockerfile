@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:latest as build
 
 RUN apk add --no-cache git make musl-dev go 
 
@@ -19,6 +19,12 @@ RUN go build -o bin/server main.go \
 WORKDIR /app
 
 RUN rm -rf $GOPATH/src
+
+FROM alpine:latest
+
+COPY --from=build /app/server /server
+
+WORKDIR /
 
 EXPOSE 8085
 

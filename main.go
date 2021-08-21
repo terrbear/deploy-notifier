@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -171,7 +172,8 @@ func (d *deployment) broadcast() {
 	api := slack.New(env.SlackToken())
 	channelID := env.ChannelID()
 
-	header := slack.MsgOptionText("*Deploying to "+env.Tenant()+"* "+env.RepoURL()+"/actions/runs/"+env.RunID(), false)
+	headerMsg := os.Getenv("SLACK_HEADER")
+	header := slack.MsgOptionText(headerMsg, false)
 
 	if d.timestamp == "" {
 		_, s2, _ := api.PostMessage(channelID, header, slack.MsgOptionAttachments(blocks...))
